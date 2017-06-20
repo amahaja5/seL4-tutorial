@@ -1,0 +1,203 @@
+<?xml version="1.0" ?>
+<!--
+     Copyright 2014, NICTA
+
+     This software may be distributed and modified according to the terms of
+     the BSD 2-Clause license. Note that NO WARRANTY is provided.
+     See "LICENSE_BSD2.txt" for details.
+
+     @TAG(NICTA_BSD)
+  -->
+<api>
+    <struct name="seL4_VCPUContext">
+        <member name="eax"/>
+        <member name="ebx"/>
+        <member name="ecx"/>
+        <member name="edx"/>
+        <member name="esi"/>
+        <member name="edi"/>
+        <member name="ebp"/>
+    </struct>
+    <interface name="seL4_X86_PageDirectory">
+        <method id="X86PageDirectoryMap" name="Map">
+            <param dir="in" name="vroot" type="seL4_CPtr"/>
+            <param dir="in" name="vaddr" type="seL4_Word"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86PageDirectoryUnmap" name="Unmap">
+        </method>
+        <method id="X86PageDirectoryGetStatusBits" name="GetStatusBits">
+            <param dir="in" name="vaddr" type="seL4_Word"/>
+            <param dir="out" name="accessed" type="seL4_Word"/>
+            <param dir="out" name="dirty" type="seL4_Word"/>
+        </method>
+    </interface>
+
+    <interface name="seL4_X86_PageTable">
+        <method id="X86PageTableMap" name="Map">
+            <param dir="in" name="vroot" type="seL4_CPtr"/>
+            <param dir="in" name="vaddr" type="seL4_Word"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86PageTableUnmap" name="Unmap">
+        </method>
+    </interface>
+
+    <interface name="seL4_X86_IOPageTable">
+        <method id="X86IOPageTableMap" name="Map">
+            <param dir="in" name="iospace" type="seL4_X86_IOSpace"/>
+            <param dir="in" name="ioaddr" type="seL4_Word"/>
+        </method>
+        <method id="X86IOPageTableUnmap" name="Unmap">
+        </method>
+    </interface>
+
+    <interface name="seL4_X86_Page">
+        <method id="X86PageMap" name="Map">
+            <param dir="in" name="vroot" type="seL4_CPtr"/>
+            <param dir="in" name="vaddr" type="seL4_Word"/>
+            <param dir="in" name="rights" type="seL4_CapRights_t"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86PageRemap" name="Remap">
+            <param dir="in" name="vroot" type="seL4_CPtr"/>
+            <param dir="in" name="rights" type="seL4_CapRights_t"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86PageUnmap" name="Unmap"/>
+        <method id="X86PageMapIO" name="MapIO">
+            <param dir="in" name="iospace" type="seL4_X86_IOSpace"/>
+            <param dir="in" name="rights" type="seL4_CapRights_t"/>
+            <param dir="in" name="ioaddr" type="seL4_Word"/>
+        </method>
+        <method id="X86PageGetAddress" name="GetAddress">
+            <param dir="out" name="paddr" type="seL4_Word"/>
+        </method>
+        <method id="X86PageMapEPT" name="MapEPT" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="vroot" type="seL4_X86_EPTPML4"/>
+            <param dir="in" name="vaddr" type="seL4_Word"/>
+            <param dir="in" name="rights" type="seL4_CapRights_t"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+    </interface>
+
+    <interface name="seL4_X86_ASIDControl">
+        <method id="X86ASIDControlMakePool" name="MakePool">
+            <param dir="in" name="untyped" type="seL4_Untyped"/>
+            <param dir="in" name="root" type="seL4_CNode"/>
+            <param dir="in" name="index" type="seL4_Word"/>
+            <param dir="in" name="depth" type="seL4_Uint8"/>
+        </method>
+    </interface>
+
+    <interface name="seL4_X86_ASIDPool">
+        <method id="X86ASIDPoolAssign" name="Assign">
+            <param dir="in" name="vroot" type="seL4_CPtr"/>
+        </method>
+    </interface>
+
+    <interface name="seL4_X86_IOPort">
+        <method id="X86IOPortIn8" name="In8">
+            <param dir="out" name="result" type="seL4_Uint8"/>
+            <param dir="in" name="port" type="seL4_Uint16"/>
+        </method>
+        <method id="X86IOPortIn16" name="In16">
+            <param dir="out" name="result" type="seL4_Uint16"/>
+            <param dir="in" name="port" type="seL4_Uint16"/>
+        </method>
+        <method id="X86IOPortIn32" name="In32">
+            <param dir="out" name="result" type="seL4_Uint32"/>
+            <param dir="in" name="port" type="seL4_Uint16"/>
+        </method>
+        <method id="X86IOPortOut8" name="Out8">
+            <param dir="in" name="port" type="seL4_Word"/>
+            <param dir="in" name="data" type="seL4_Word"/>
+        </method>
+        <method id="X86IOPortOut16" name="Out16">
+            <param dir="in" name="port" type="seL4_Word"/>
+            <param dir="in" name="data" type="seL4_Word"/>
+        </method>
+        <method id="X86IOPortOut32" name="Out32">
+            <param dir="in" name="port" type="seL4_Word"/>
+            <param dir="in" name="data" type="seL4_Word"/>
+        </method>
+    </interface>
+
+    <interface name="seL4_IRQControl">
+        <method id="X86IRQIssueIRQHandlerIOAPIC" name="GetIOAPIC">
+            <param dir="in" name="root" type="seL4_CNode"/>
+            <param dir="in" name="index" type="seL4_Word"/>
+            <param dir="in" name="depth" type="seL4_Word"/>
+            <param dir="in" name="ioapic" type="seL4_Word"/>
+            <param dir="in" name="pin" type="seL4_Word"/>
+            <param dir="in" name="level" type="seL4_Word"/>
+            <param dir="in" name="polarity" type="seL4_Word"/>
+            <param dir="in" name="vector" type="seL4_Word"/>
+        </method>
+        <method id="X86IRQIssueIRQHandlerMSI" name="GetMSI">
+            <param dir="in" name="root" type="seL4_CNode"/>
+            <param dir="in" name="index" type="seL4_Word"/>
+            <param dir="in" name="depth" type="seL4_Word"/>
+            <param dir="in" name="pci_bus" type="seL4_Word"/>
+            <param dir="in" name="pci_dev" type="seL4_Word"/>
+            <param dir="in" name="pci_func" type="seL4_Word"/>
+            <param dir="in" name="handle" type="seL4_Word"/>
+            <param dir="in" name="vector" type="seL4_Word"/>
+        </method>
+    </interface>
+    <interface name="seL4_TCB">
+        <method id="TCBSetEPTRoot" name="SetEPTRoot" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="vcpu" type="seL4_CPtr"/>
+        </method>
+    </interface>
+    <interface name="seL4_X86_VCPU">
+        <method id="X86VCPUSetTCB" name="SetTCB" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="tcb" type="seL4_CNode" />
+        </method>
+        <method id="X86VCPUReadVMCS" name="ReadVMCS" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="field" type="seL4_Word"/>
+            <param dir="out" name="value" type="seL4_Word"/>
+        </method>
+        <method id="X86VCPUWriteVMCS" name="WriteVMCS" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="field" type="seL4_Word"/>
+            <param dir="in" name="value" type="seL4_Word"/>
+            <param dir="out" name="written" type="seL4_Word"/>
+        </method>
+        <method id="X86VCPUEnableIOPort" name="EnableIOPort" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="ioPort" type="seL4_CNode"/>
+            <param dir="in" name="low" type="seL4_Word"/>
+            <param dir="in" name="high" type="seL4_Word"/>
+        </method>
+        <method id="X86VCPUDisableIOPort" name="DisableIOPort" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="low" type="seL4_Word"/>
+            <param dir="in" name="high" type="seL4_Word"/>
+        </method>
+        <method id="X86VCPUWriteRegisters" name="WriteRegisters" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="regs" type="seL4_VCPUContext"/>
+        </method>
+    </interface>
+    <interface name="seL4_X86_EPTPDPT">
+        <method id="X86EPTPDPTMap" name="Map" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="pml4" type="seL4_X86_EPTPML4"/>
+            <param dir="in" name="gpa" type="seL4_Word"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86EPTPDPTUnmap" name="Unmap" condition="defined(CONFIG_VTX)"/>
+    </interface>
+    <interface name="seL4_X86_EPTPD">
+        <method id="X86EPTPDMap" name="Map" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="pml4" type="seL4_X86_EPTPML4"/>
+            <param dir="in" name="gpa" type="seL4_Word"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86EPTPDUnmap" name="Unmap" condition="defined(CONFIG_VTX)"/>
+    </interface>
+    <interface name="seL4_X86_EPTPT">
+        <method id="X86EPTPTMap" name="Map" condition="defined(CONFIG_VTX)">
+            <param dir="in" name="pml4" type="seL4_X86_EPTPML4"/>
+            <param dir="in" name="gpa" type="seL4_Word"/>
+            <param dir="in" name="attr" type="seL4_X86_VMAttributes"/>
+        </method>
+        <method id="X86EPTPTUnmap" name="Unmap" condition="defined(CONFIG_VTX)"/>
+    </interface>
+</api>
